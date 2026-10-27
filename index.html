@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>turg</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="icon" href="/images/turg.jpg" type="image/jpeg">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <video autoplay loop muted playsinline class="bg-video">
+    <source src="https://www.image2url.com/r2/default/videos/1787824037300-924594de-0dbc-4b61-9371-f7330ea44771.mp4" type="video/mp4">
+    Your browser does not support the video tag.
+  </video>
+
+  <main class="glass-card">
+    <div class="profile-header">
+      <img src="/images/turg.jpg" alt="Avatar" class="avatar">
+      <h1 class="username">turg</h1>
+    </div>
+
+    <div class="tab-wrapper">
+      <nav class="tab-buttons">
+        <button class="tab-btn active" onclick="switchTab(event, 'about')">About Me</button>
+        <button class="tab-btn" onclick="switchTab(event, 'ports')">My Projects</button>
+        <button class="tab-btn" onclick="switchTab(event, 'activity')">My Socials</button>
+      </nav>
+
+      <div class="tab-body">
+        <section id="about" class="tab-pane active">
+          <h2>Hi, I'm turg!</h2>
+          <p>I port games to WebAssembly as a passion, I am co-owner of the Universal Stash on Discord, I own an UBG site named Lowkey Chopped Elite, and I LOVE to draw.</p>
+        </section>
+
+        <section id="ports" class="tab-pane">
+          <div class="ports-grid">
+            
+            <a href="https://github.com/turg1991/PORTS/tree/main/AntonBlast/" target="_blank" rel="noopener noreferrer" class="port-card">
+              <img src="https://truffled.lol/png/games/anton.webp" alt="Icon" class="port-icon">
+              <h3>AntonBlast</h3>
+              <p>The latest update of AntonBlast ported to web using the VM branch.</p>
+            </a>
+
+            <a href="https://lowkeychopped.me" target="_blank" rel="noopener noreferrer" class="port-card">
+              <img src="/images/lowkeychoppedlogo.png" alt="Icon" class="port-icon">
+              <h3>Lowkey Chopped Elite (W.I.P)</h3>
+              <p>An (in-development) unblocked game site with a Scramjet proxy!</p>
+            </a>
+
+            <a href="https://github.com/turg1991/PORTS/tree/main/Deltatraveler/" target="_blank" rel="noopener noreferrer" class="port-card">
+              <img src="https://cdn2.steamgriddb.com/thumb/a3a312716329ffe0c7d7ecf34a8251b9.jpg" alt="Icon" class="port-icon">
+              <h3>Deltatraveler</h3>
+              <p>The popular Deltarune fangame by VyletBunni ported to a web browser.</p>
+            </a>
+
+            <a href="https://github.com/turg1991/PORTS/tree/main/Omori/" target="_blank" rel="noopener noreferrer" class="port-card">
+              <img src="/images/omori.jpg" alt="Icon" class="port-icon">
+              <h3>Omori</h3>
+              <p>The famous RPG Maker MV game reimplemented into a browser with mod support via OneLoader.</p>
+            </a>
+
+          </div>
+        </section>
+
+        <section id="activity" class="tab-pane">
+          <h2>Social Media:</h2>
+          <p>Discord: @turg1991</p>
+          <p>Twitter: @turg1991</p>
+          <p>YouTube: @turg1985</p>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    function switchTab(evt, tabId) {
+      const activePane = document.querySelector('.tab-pane.active');
+      const targetPane = document.getElementById(tabId);
+      
+      if (activePane === targetPane) return;
+      
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+      evt.currentTarget.classList.add('active');
+
+      if (activePane) {
+        activePane.classList.remove('active');
+        setTimeout(() => {
+          targetPane.classList.add('active');
+        }, 150);
+      } else {
+        targetPane.classList.add('active');
+      }
+    }
+  </script>
+</body>
+</html>
