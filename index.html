@@ -17,6 +17,7 @@
     Your browser does not support the video tag.
   </video>
 
+  <div class="page-shell" id="site">
   <main class="glass-card">
     <div class="profile-header">
       <img src="/images/turg.jpg" alt="Avatar" class="avatar">
@@ -66,13 +67,19 @@
             <a href="https://github.com/turg1991/PORTS/tree/main/Ray3Wasm/" target="_blank" rel="noopener noreferrer" class="port-card">
               <img src="/images/rayman3.ico" alt="Icon" class="port-icon">
               <h3>Ray3Wasm</h3>
-              <p>Rayman 3: Hoodlum Havoc ported to Webassembly using web-compiled functions from the Playstation 2 release.</p>
+              <p>Rayman 3: Hoodlum Havoc ported to WebAssembly using web-compiled functions from the Playstation 2 release.</p>
             </a>
 
 	    <a href="https://github.com/turg1991/PORTS/tree/main/OMORI/" target="_blank" rel="noopener noreferrer" class="port-card">
               <img src="/images/omori.png" alt="Icon" class="port-icon">
               <h3>Omori</h3>
-              <p>Omori v1.0.8 ported to Webassembly with mod support via OneLoader.</p>
+              <p>Omori v1.0.8 ported to WebAssembly with mod support via OneLoader.</p>
+            </a>
+
+            <a href="https://github.com/turg1991/PORTS/tree/main/Twilight Monk/" target="_blank" rel="noopener noreferrer" class="port-card">
+              <img src="/images/twilight monk.jpg" alt="Icon" class="port-icon">
+              <h3>Twilight Monk</h3>
+              <p>Twilight Monk statically recompiled to WebAssembly via UEWASM.</p>
             </a>
 
           </div>
@@ -87,6 +94,58 @@
       </div>
     </div>
   </main>
+
+  <section class="player-card" aria-label="Music player">
+    <div class="player-main">
+      <div class="now-playing">
+        <img id="coverArt" src="/images/tupac.jpg" alt="Cover art for Hit 'Em Up" class="cover-art" width="64" height="64">
+        <div class="now-playing-text">
+          <span class="player-label">Now playing</span>
+          <h2 class="track-title"><span id="trackTitle">Hit 'Em Up</span> <span class="explicit-badge" title="Explicit content" aria-label="Explicit content">E</span></h2>
+          <p id="trackArtist" class="track-artist">2Pac</p>
+        </div>
+        <div class="equalizer" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+      </div>
+
+      <div class="player-controls">
+        <div class="transport">
+          <button type="button" class="control-btn" id="prevBtn" aria-label="Previous track">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 5h2v14H6zm3.5 7L19 5v14z"/></svg>
+          </button>
+          <button type="button" class="control-btn play-btn" id="playBtn" aria-label="Play" aria-pressed="false">
+            <svg class="icon-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+            <svg class="icon-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 5h3.5v14H7zm6.5 0H17v14h-3.5z"/></svg>
+          </button>
+          <button type="button" class="control-btn" id="nextBtn" aria-label="Next track">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 5h2v14h-2zM5 5l9.5 7L5 19z"/></svg>
+          </button>
+        </div>
+        <div class="progress-row">
+          <span id="currentTime" class="time">0:00</span>
+          <input type="range" id="seek" class="range seek" min="0" max="100" step="0.1" value="0" aria-label="Seek through track">
+          <span id="duration" class="time">3:31</span>
+        </div>
+      </div>
+
+      <div class="volume-control">
+        <button type="button" class="control-btn" id="muteBtn" aria-label="Mute">
+          <svg class="icon-volume" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9H4zm12.5 3a4.5 4.5 0 0 0-2.5-4v8a4.5 4.5 0 0 0 2.5-4zM14 3.2v2.1a7 7 0 0 1 0 13.4v2.1a9 9 0 0 0 0-17.6z"/></svg>
+          <svg class="icon-muted" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9H4zm13.6 3 2.2-2.2-1.4-1.4-2.2 2.2-2.2-2.2-1.4 1.4 2.2 2.2-2.2 2.2 1.4 1.4 2.2-2.2 2.2 2.2 1.4-1.4z"/></svg>
+        </button>
+        <input type="range" id="volume" class="range volume" min="0" max="1" step="0.01" value="0.8" aria-label="Volume">
+      </div>
+    </div>
+  </section>
+  </div>
+
+  <div class="explicit-overlay" id="explicitOverlay">
+    <div class="explicit-card" role="alertdialog" aria-modal="true" aria-labelledby="explicitTitle" aria-describedby="explicitText">
+      <div class="warning-icon" aria-hidden="true">!</div>
+      <h2 id="explicitTitle">WARNING</h2>
+      <p id="explicitText">the songs I listen to have no-no words</p>
+      <button type="button" class="warning-btn" id="warningAck">I understand</button>
+    </div>
+  </div>
 
   <script>
     function switchTab(evt, tabId) {
@@ -107,6 +166,238 @@
         targetPane.classList.add('active');
       }
     }
+
+    (function initMusicPlayer() {
+
+      const tracks = [
+        {
+          title: "Hit 'Em Up",
+          artist: '2Pac',
+          src: "/music/Hit 'Em Up - 2Pac.mp3",
+          cover: '/images/tupac.jpg',
+          duration: 211.5
+        },
+        {
+          title: 'Mrs. Jackson',
+          artist: 'Outkast',
+          src: '/music/Mrs. Jackson - Outkast.mp3',
+          cover: '/images/outkast.jpg',
+          duration: 241.596
+        }
+      ];
+
+      const audio = new Audio();
+      audio.preload = 'metadata';
+
+      const player = document.querySelector('.player-card');
+      const coverArt = document.getElementById('coverArt');
+      const trackTitle = document.getElementById('trackTitle');
+      const trackArtist = document.getElementById('trackArtist');
+      const playBtn = document.getElementById('playBtn');
+      const prevBtn = document.getElementById('prevBtn');
+      const nextBtn = document.getElementById('nextBtn');
+      const muteBtn = document.getElementById('muteBtn');
+      const seek = document.getElementById('seek');
+      const volume = document.getElementById('volume');
+      const currentTimeEl = document.getElementById('currentTime');
+      const durationEl = document.getElementById('duration');
+      const overlay = document.getElementById('explicitOverlay');
+      const warningAck = document.getElementById('warningAck');
+      const site = document.getElementById('site');
+
+      const objectUrls = new Map();
+      let currentIndex = 0;
+      let loadToken = 0;
+      let pendingPlay = false;
+      let warningOpen = true;
+
+      function formatTime(seconds) {
+        if (!Number.isFinite(seconds) || seconds < 0) return '0:00';
+        const total = Math.floor(seconds);
+        return Math.floor(total / 60) + ':' + String(total % 60).padStart(2, '0');
+      }
+
+      function paintRange(input) {
+        const min = Number(input.min) || 0;
+        const max = Number(input.max) || 100;
+        const pct = max === min ? 0 : ((Number(input.value) - min) / (max - min)) * 100;
+        input.style.setProperty('--fill', pct + '%');
+      }
+
+      // Loading the mp3 as a blob makes seeking work even on servers that
+      // ignore Range requests (which would otherwise reset currentTime to 0).
+      async function getTrackSource(track) {
+        if (objectUrls.has(track.src)) return objectUrls.get(track.src);
+        const url = encodeURI(track.src);
+        try {
+          const response = await fetch(url);
+          if (!response.ok) throw new Error('HTTP ' + response.status);
+          const blobUrl = URL.createObjectURL(await response.blob());
+          objectUrls.set(track.src, blobUrl);
+          return blobUrl;
+        } catch (error) {
+          return url;
+        }
+      }
+
+      function updateTrackUI() {
+        const track = tracks[currentIndex];
+        coverArt.src = track.cover;
+        coverArt.alt = 'Cover art for ' + track.title + ' by ' + track.artist;
+        trackTitle.textContent = track.title;
+        trackArtist.textContent = track.artist;
+        durationEl.textContent = formatTime(track.duration);
+      }
+
+      function setPlayingUI(isPlaying) {
+        player.classList.toggle('is-playing', isPlaying);
+        playBtn.setAttribute('aria-label', isPlaying ? 'Pause' : 'Play');
+        playBtn.setAttribute('aria-pressed', String(isPlaying));
+      }
+
+      function play() {
+        if (warningOpen) {
+          pendingPlay = false;
+          return;
+        }
+        if (!audio.src) {
+          pendingPlay = true;
+          return;
+        }
+        pendingPlay = false;
+        const result = audio.play();
+        if (result && typeof result.catch === 'function') {
+          result.catch(function () { setPlayingUI(false); });
+        }
+      }
+
+      function togglePlay() {
+        if (audio.paused) play();
+        else {
+          pendingPlay = false;
+          audio.pause();
+        }
+      }
+
+      async function loadTrack(index, autoplay) {
+        const token = ++loadToken;
+        currentIndex = (index + tracks.length) % tracks.length;
+        const track = tracks[currentIndex];
+        updateTrackUI();
+        seek.value = 0;
+        paintRange(seek);
+        currentTimeEl.textContent = '0:00';
+        setPlayingUI(false);
+        pendingPlay = autoplay;
+
+        const source = await getTrackSource(track);
+        if (token !== loadToken) return;
+        audio.src = source;
+        audio.load();
+        if (pendingPlay) play();
+      }
+
+      function closeWarning() {
+        if (!warningOpen) return;
+        warningOpen = false;
+        overlay.classList.add('closed');
+        overlay.setAttribute('aria-hidden', 'true');
+        document.body.classList.remove('warning-open');
+        site.inert = false;
+        site.removeAttribute('aria-hidden');
+        play();
+        playBtn.focus();
+      }
+
+      // Keep the fixed bar's height in sync so page content never hides behind it.
+      function syncPlayerHeight() {
+        document.documentElement.style.setProperty('--player-height', player.offsetHeight + 'px');
+      }
+      if (window.ResizeObserver) {
+        new ResizeObserver(syncPlayerHeight).observe(player);
+      } else {
+        window.addEventListener('resize', syncPlayerHeight);
+      }
+      syncPlayerHeight();
+
+      // Build UI and apply the measured durations before metadata arrives.
+      loadTrack(0, false);
+      tracks.slice(1).forEach(getTrackSource);
+      audio.volume = Number(volume.value);
+      paintRange(volume);
+      paintRange(seek);
+
+      audio.addEventListener('loadedmetadata', function () {
+        if (!Number.isFinite(audio.duration)) return;
+        tracks[currentIndex].duration = audio.duration;
+        updateTrackUI();
+      });
+
+      audio.addEventListener('timeupdate', function () {
+        const duration = audio.duration || tracks[currentIndex].duration;
+        seek.value = duration > 0 ? (audio.currentTime / duration) * 100 : 0;
+        paintRange(seek);
+        currentTimeEl.textContent = formatTime(audio.currentTime);
+      });
+
+      audio.addEventListener('play', function () { setPlayingUI(true); });
+      audio.addEventListener('pause', function () { setPlayingUI(false); });
+      audio.addEventListener('ended', function () { loadTrack(currentIndex + 1, true); });
+
+      audio.addEventListener('volumechange', function () {
+        const silent = audio.muted || audio.volume === 0;
+        player.classList.toggle('is-muted', silent);
+        muteBtn.setAttribute('aria-label', silent ? 'Unmute' : 'Mute');
+      });
+
+      playBtn.addEventListener('click', togglePlay);
+      prevBtn.addEventListener('click', function () { loadTrack(currentIndex - 1, true); });
+      nextBtn.addEventListener('click', function () { loadTrack(currentIndex + 1, true); });
+
+      seek.addEventListener('input', function () {
+        const duration = audio.duration || tracks[currentIndex].duration;
+        if (Number.isFinite(duration) && duration > 0) {
+          audio.currentTime = (Number(seek.value) / 100) * duration;
+          currentTimeEl.textContent = formatTime(audio.currentTime);
+        }
+        paintRange(seek);
+      });
+
+      volume.addEventListener('input', function () {
+        audio.volume = Number(volume.value);
+        audio.muted = false;
+        paintRange(volume);
+      });
+
+      muteBtn.addEventListener('click', function () {
+        if (audio.muted || audio.volume === 0) {
+          audio.muted = false;
+          if (audio.volume === 0) {
+            volume.value = 0.8;
+            audio.volume = 0.8;
+            paintRange(volume);
+          }
+        } else {
+          audio.muted = true;
+        }
+      });
+
+      warningAck.addEventListener('click', closeWarning);
+      document.addEventListener('keydown', function (event) {
+        if (event.key === 'Escape' && warningOpen) {
+          closeWarning();
+        } else if (event.code === 'Space' && !warningOpen && event.target === document.body) {
+          event.preventDefault();
+          togglePlay();
+        }
+      });
+
+      // Keep the site inert until the explicit-content notice is acknowledged.
+      document.body.classList.add('warning-open');
+      site.inert = true;
+      site.setAttribute('aria-hidden', 'true');
+      warningAck.focus();
+    })();
   </script>
 </body>
 </html>
